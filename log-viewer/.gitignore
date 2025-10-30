@@ -1,0 +1,4 @@
+# Downloaded frontend dependencies (fetched during Docker build)
+rootfs/opt/logviewer/public/js/jquery-3.3.1.min.js
+rootfs/opt/logviewer/public/js/jquery.hotkeys.js
+rootfs/opt/logviewer/public/js/event-target.min.js
