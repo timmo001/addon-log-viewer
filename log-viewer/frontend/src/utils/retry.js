@@ -1,4 +1,7 @@
-class Retry extends EventTarget {
+/**
+ * Retry - Exponential backoff retry logic
+ */
+export class Retry extends EventTarget {
   constructor(intervals) {
     super();
     this._intervals = intervals || [3, 5, 10, 30, 60, 300, 600];

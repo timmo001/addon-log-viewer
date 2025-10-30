@@ -1,17 +1,16 @@
-class Stylize {
+/**
+ * Stylize - Log line styling and highlighting utility
+ */
+export class Stylize {
   constructor(styleMap) {
     if (typeof styleMap === 'undefined' || !styleMap.length) {
-      if (typeof window._stylizeDefaultStyleMap !== 'undefined' && window._stylizeDefaultStyleMap.length) {
-        styleMap = window._stylizeDefaultStyleMap;
-      } else {
-        styleMap = [
-          {keyword: 'ERROR', style: 'color: red; font-weight: bold;'},
-          {keyword: 'WARN', style: 'color: yellow;'},
-          {keyword: 'INFO', style: 'color: limegreen;'},
-          {keyword: 'DEBUG', style: 'color: cyan;'},
-          {keyword: 'TRACE', style: 'color: blue;'},
-        ];
-      }
+      styleMap = [
+        { keyword: 'ERROR', style: 'color: red; font-weight: bold;' },
+        { keyword: 'WARN', style: 'color: yellow;' },
+        { keyword: 'INFO', style: 'color: limegreen;' },
+        { keyword: 'DEBUG', style: 'color: cyan;' },
+        { keyword: 'TRACE', style: 'color: blue;' },
+      ];
     }
 
     this._map = styleMap;
@@ -41,14 +40,14 @@ class Stylize {
   }
 
   hash(string) {
-    var hash = 0;
+    let hash = 0;
 
     if (string.length === 0) {
       return hash;
     }
 
-    for (var i = 0; i < string.length; i++) {
-      var chr = string.charCodeAt(i);
+    for (let i = 0; i < string.length; i++) {
+      const chr = string.charCodeAt(i);
       hash = ((hash << 5) - hash) + chr;
       hash |= 0;
     }
@@ -66,7 +65,7 @@ class Stylize {
 
   parse(line) {
     for (let i = 0; i < this._map.length; i++) {
-      let {keyword, style} = this._map[i];
+      let { keyword, style } = this._map[i];
       let match, re;
 
       if (match = keyword.match(new RegExp('^/(.+?)/([gimy]*)$'))) {
@@ -79,9 +78,6 @@ class Stylize {
         line = '<span class="stylized k' + this.hash(keyword) + ' h' + this.hash(line) + '" style="' + style + '">' + this.esc(line) + '</span>';
         break;
       }
-
-      // Does this actually work for preventing memory leaks?
-      keyword = style = match = re = null;
     }
 
     return line;

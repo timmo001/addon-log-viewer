@@ -22,18 +22,15 @@ RUN \
 # Copy root file system
 COPY rootfs /
 
-# Download frontend dependencies
+# Build frontend with Vite
+COPY frontend /tmp/frontend
 RUN \
-    curl -L -s -o /opt/logviewer/public/js/jquery-3.3.1.min.js \
-        "https://code.jquery.com/jquery-3.3.1.min.js" \
-    \
-    && curl -L -s -o /opt/logviewer/public/js/jquery.hotkeys.js \
-        "https://raw.githubusercontent.com/jeresig/jquery.hotkeys/0.2.0/jquery.hotkeys.js" \
-    \
-    && curl -L -s -o /opt/logviewer/public/js/event-target.min.js \
-        "https://unpkg.com/@ungap/event-target@0.2.4/min.js"
+    cd /tmp/frontend \
+    && npm install \
+    && npm run build \
+    && rm -rf /tmp/frontend
 
-# Install Node.js dependencies
+# Install backend Node.js dependencies
 RUN \
     cd /opt/logviewer \
     && npm install --production \

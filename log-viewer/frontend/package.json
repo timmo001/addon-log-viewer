@@ -1,0 +1,18 @@
+{
+  "name": "ha-addon-log-viewer",
+  "version": "1.0.0",
+  "description": "Home Assistant Add-on Log Viewer Frontend",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lit": "^3.2.1",
+    "tinykeys": "^3.0.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.1"
+  }
+}
