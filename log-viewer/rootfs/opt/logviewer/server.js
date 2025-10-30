@@ -13,11 +13,14 @@ const path = require('path');
 // Configuration
 const PORT = process.env.PORT || 4277;
 const MAX_BUFFER_LINES = 100;
+const MAX_RESTART_ATTEMPTS = 10;
 
 // State
 const logBuffer = [];
 let haProcess = null;
 let wss = null;
+let restartAttempts = 0;
+let isRestarting = false;
 
 /**
  * Create Express app and WebSocket server
@@ -212,7 +215,20 @@ function broadcast(line) {
  * Spawn and monitor 'ha core logs --follow' process
  */
 function startLogStreaming() {
-  console.log('Starting log streaming: ha core logs --follow');
+  // Check if restart already in progress
+  if (isRestarting) {
+    console.log('Restart already in progress, skipping...');
+    return;
+  }
+
+  // Check if max restart attempts exceeded
+  if (restartAttempts >= MAX_RESTART_ATTEMPTS) {
+    console.error('Max restart attempts reached. Giving up.');
+    process.exit(1);
+  }
+
+  restartAttempts++;
+  console.log(`Starting log streaming: ha core logs --follow (attempt ${restartAttempts})`);
 
   haProcess = spawn('ha', ['core', 'logs', '--follow'], {
     stdio: ['ignore', 'pipe', 'pipe']
@@ -226,6 +242,8 @@ function startLogStreaming() {
 
   rl.on('line', (line) => {
     if (line) {
+      // Reset restart attempts on successful data
+      restartAttempts = 0;
       broadcast(line);
     }
   });
@@ -237,21 +255,35 @@ function startLogStreaming() {
   haProcess.on('exit', (code, signal) => {
     console.error(`HA CLI process exited with code ${code}, signal ${signal}`);
 
-    // Attempt to restart after a delay
+    // Prevent duplicate restart attempts
+    if (isRestarting) return;
+    isRestarting = true;
+
+    // Exponential backoff: 5s, 10s, 20s, 40s, etc. (max 60s)
+    const delay = Math.min(5000 * Math.pow(2, restartAttempts - 1), 60000);
+
     setTimeout(() => {
       console.log('Attempting to restart log streaming...');
+      isRestarting = false;
       startLogStreaming();
-    }, 5000);
+    }, delay);
   });
 
   haProcess.on('error', (err) => {
     console.error('Failed to start HA CLI:', err);
 
-    // Attempt to restart after a delay
+    // Prevent duplicate restart attempts
+    if (isRestarting) return;
+    isRestarting = true;
+
+    // Exponential backoff: 5s, 10s, 20s, 40s, etc. (max 60s)
+    const delay = Math.min(5000 * Math.pow(2, restartAttempts - 1), 60000);
+
     setTimeout(() => {
       console.log('Attempting to restart log streaming...');
+      isRestarting = false;
       startLogStreaming();
-    }, 5000);
+    }, delay);
   });
 }
 
