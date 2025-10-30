@@ -27,6 +27,16 @@
       "versioningTemplate": "loose",
       "datasourceTemplate": "repology",
       "depNameTemplate": "alpine_3_19/{{package}}"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["/Dockerfile$"],
+      "matchStrings": [
+        "ARG HA_CLI_VERSION=[\"']?(?<currentValue>.+?)[\"']?\\s+"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "home-assistant/cli",
+      "versioningTemplate": "loose"
     }
   ],
   "packageRules": [
@@ -42,6 +52,11 @@
       "groupName": "Add-on base image",
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchDatasources": ["github-releases"],
+      "matchDepNames": ["home-assistant/cli"],
       "automerge": true
     }
   ]

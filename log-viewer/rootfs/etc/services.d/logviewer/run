@@ -4,4 +4,4 @@
 # Runs the Log Viewer
 # ==============================================================================
 bashio::log.info "Starting Log Viewer..."
-exec ws-log "/homeassistant/home-assistant.log"
+exec node /opt/logviewer/server.js
