@@ -14,6 +14,7 @@ export class StatusBar extends LitElement {
 
   static styles = css`
     :host {
+      display: flex;
       background-color: #1a1a1a;
       color: #e0e0e0;
       padding: 8px 12px;
