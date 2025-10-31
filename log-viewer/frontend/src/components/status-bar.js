@@ -21,27 +21,47 @@ export class StatusBar extends LitElement {
       border-top: 1px solid #444;
       font-family: 'Monaco', 'Courier New', monospace;
       font-size: 12px;
-    }
-
-    .status-bar-content {
-      display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .status {
-      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .status-indicator.connected {
+      background-color: #4caf50;
+    }
+
+    .status-indicator.connecting {
+      background-color: #ff9800;
+    }
+
+    .status-indicator.disconnected {
+      background-color: #f44336;
+    }
+
+    .status-indicator.error {
+      background-color: #f44336;
     }
 
     .commands {
       display: flex;
-      gap: 12px;
+      gap: 16px;
     }
 
     .command {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       cursor: pointer;
       transition: opacity 0.2s;
     }
@@ -159,13 +179,29 @@ export class StatusBar extends LitElement {
     };
   }
 
+  _getStatusIndicatorClass() {
+    const status = this.status.toLowerCase();
+    if (status.includes('connected') && !status.includes('disconnected')) {
+      return 'connected';
+    } else if (status.includes('connecting') || status.includes('retry')) {
+      return 'connecting';
+    } else if (status.includes('disconnected')) {
+      return 'disconnected';
+    } else if (status.includes('error')) {
+      return 'error';
+    }
+    return 'disconnected';
+  }
+
   render() {
     const colors = this._getHotkeyColors();
 
     return html`
-      <div class="status-bar-content">
-        <span class="status">${this.status}</span>
-        <div class="commands">
+      <div class="status">
+        <span class="status-indicator ${this._getStatusIndicatorClass()}"></span>
+        <span>${this.status}</span>
+      </div>
+      <div class="commands">
           ${this.canConnect ? html`
             <span class="command connect" @click=${this._handleConnect}>
               <span class="hotkey" style="color: ${colors.fg}; background-color: ${colors.bg}">
@@ -206,7 +242,6 @@ export class StatusBar extends LitElement {
             </span>
             Clear Console
           </span>
-        </div>
       </div>
     `;
   }
