@@ -14,7 +14,7 @@ body {
 
 /* Ensure web component fills the viewport */
 log-viewer {
-  display: block;
+  display: flex;
   height: 100vh;
   width: 100vw;
 }
