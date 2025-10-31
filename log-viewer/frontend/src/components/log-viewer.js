@@ -22,17 +22,20 @@ export class LogViewer extends LitElement {
       flex-direction: column;
       height: 100vh;
       width: 100%;
+      overflow: hidden;
     }
 
     .log {
       flex: 1;
-      overflow-y: scroll;
+      overflow-y: auto;
+      overflow-x: hidden;
       padding: 10px;
       background-color: #2b2b2b;
       color: #e0e0e0;
       font-family: 'Monaco', 'Courier New', monospace;
       font-size: 13px;
       line-height: 1.5;
+      min-height: 0;
     }
 
     .log code {
