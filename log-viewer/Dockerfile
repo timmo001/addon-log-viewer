@@ -27,7 +27,7 @@ COPY frontend /tmp/frontend
 RUN \
     cd /tmp/frontend \
     && npm install \
-    && npm run build \
+    && BUILD_OUT_DIR=/opt/logviewer/public npm run build \
     && rm -rf /tmp/frontend
 
 # Install backend Node.js dependencies

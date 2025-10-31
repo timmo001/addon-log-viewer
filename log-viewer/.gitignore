@@ -4,4 +4,5 @@ frontend/node_modules/
 # Vite build output (generated during Docker build)
 rootfs/opt/logviewer/public/*.html
 rootfs/opt/logviewer/public/*.js
+rootfs/opt/logviewer/public/*.ico
 rootfs/opt/logviewer/public/assets/

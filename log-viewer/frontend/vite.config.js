@@ -4,7 +4,7 @@ export default defineConfig({
   root: './',
   publicDir: 'public',
   build: {
-    outDir: '../rootfs/opt/logviewer/public',
+    outDir: process.env.BUILD_OUT_DIR || '../rootfs/opt/logviewer/public',
     emptyOutDir: true,
     rollupOptions: {
       input: {
